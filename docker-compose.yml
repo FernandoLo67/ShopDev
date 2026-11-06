@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: shopdev_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: shopdev
+      POSTGRES_PASSWORD: shopdev_pass
+      POSTGRES_DB: shopdev
+    ports:
+      - "5432:5432"
+    volumes:
+      - shopdev_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopdev -d shopdev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  shopdev_pgdata:
