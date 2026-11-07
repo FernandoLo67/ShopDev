@@ -17,3 +17,6 @@ build/
 *.jks
 credentials.json
 service-account*.json
+
+server/uploads/*
+!server/uploads/products/.gitkeep
