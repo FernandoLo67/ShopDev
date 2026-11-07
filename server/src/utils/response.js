@@ -9,3 +9,7 @@ export const created = (res, data) => {
 export const noContent = (res) => {
   return res.status(204).end();
 };
+
+export const paginated = (res, data, pagination) => {
+  return res.status(200).json({ status: 'success', data, pagination });
+};
