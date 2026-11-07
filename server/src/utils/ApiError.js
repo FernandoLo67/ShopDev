@@ -24,8 +24,8 @@ export class ApiError extends Error {
     return new ApiError(404, message);
   }
 
-  static conflict(message = 'Conflicto con el estado actual') {
-    return new ApiError(409, message);
+  static conflict(message = 'Conflicto con el estado actual', details = null) {
+    return new ApiError(409, message, details);
   }
 
   static internal(message = 'Error interno del servidor') {
