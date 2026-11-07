@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'node:path';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -13,7 +14,8 @@ const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use('/uploads', express.static(path.resolve('uploads'), { index: false, dotfiles: 'deny' }));
 app.use(cors({ origin: env.corsOrigin }));
 app.use(morgan(env.isProd ? 'combined' : 'dev'));
 app.use(express.json({ limit: '1mb' }));
