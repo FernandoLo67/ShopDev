@@ -2,7 +2,7 @@
 
 Plataforma de comercio electronico fullstack construida con React, Node.js, Express, Prisma y PostgreSQL.
 
-![Vista previa](docs/referencia-diseno.webp)
+
 
 ## Stack tecnologico
 
