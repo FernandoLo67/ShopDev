@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { prisma } from '../config/prisma.js';
 import { env } from '../config/env.js';
 import { ApiError } from '../utils/ApiError.js';
+import { logger } from '../utils/logger.js';
 
 const USER_SELECT = {
   id: true,
@@ -49,6 +50,7 @@ export const login = async ({ email, password }) => {
   const valid = await bcrypt.compare(password, hash);
 
   if (!user || !valid) {
+    logger.warn(`Login fallido para: ${normalizedEmail}`);
     throw ApiError.unauthorized('Credenciales invalidas');
   }
 

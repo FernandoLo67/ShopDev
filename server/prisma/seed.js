@@ -2,13 +2,28 @@ import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
+if (process.env.NODE_ENV === 'production') {
+  console.error('Seed no permitido en produccion. Usa NODE_ENV=development.');
+  process.exit(1);
+}
+
 const prisma = new PrismaClient();
 
-const BCRYPT_ROUNDS = 10;
+const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 10;
 
 const USERS = [
-  { nombre: 'Administrador', email: 'admin@shopdev.com', password: 'Admin123!', rol: 'ADMIN' },
-  { nombre: 'Cliente Demo', email: 'cliente@shopdev.com', password: 'Cliente123!', rol: 'CLIENTE' },
+  {
+    nombre: 'Administrador',
+    email: process.env.SEED_ADMIN_EMAIL || 'admin@shopdev.com',
+    password: process.env.SEED_ADMIN_PASSWORD || 'Admin123!',
+    rol: 'ADMIN',
+  },
+  {
+    nombre: 'Cliente Demo',
+    email: process.env.SEED_CLIENT_EMAIL || 'cliente@shopdev.com',
+    password: process.env.SEED_CLIENT_PASSWORD || 'Cliente123!',
+    rol: 'CLIENTE',
+  },
 ];
 
 const CATEGORIES = [

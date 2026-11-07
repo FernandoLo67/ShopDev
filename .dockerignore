@@ -1,0 +1,11 @@
+.env*
+.git
+.claude
+node_modules
+dist
+build
+*.md
+*.log
+.vscode
+.idea
+.DS_Store
