@@ -1,15 +1,40 @@
+# Dependencias
 node_modules/
+
+# Variables de entorno
 .env
 .env.local
 .env.production
 .env.*.local
+
+# Build y compilacion
 dist/
 build/
+
+# Logs
 *.log
+npm-debug.log*
+
+# Sistema operativo
 .DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDEs y editores
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
+# Docker
+docker-compose.override.yml
+
+# Uploads generados por usuarios
+server/uploads/*
+!server/uploads/products/.gitkeep
+
+# Credenciales y certificados
 *.pem
 *.key
 *.p12
@@ -18,5 +43,12 @@ build/
 credentials.json
 service-account*.json
 
-server/uploads/*
-!server/uploads/products/.gitkeep
+# Claude Code
+.claude/
+
+# Archivos de analisis temporales
+FASE*_ANALISIS.md
+
+# Cobertura de tests
+coverage/
+.nyc_output/

@@ -1,4 +1,14 @@
+# Dependencias
 node_modules/
+
+# Variables de entorno
 .env
 .env.local
+.env.production
+.env.*.local
+
+# Logs
 *.log
+
+# Prisma
+prisma/migrations/**/migration_lock.toml

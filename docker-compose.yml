@@ -5,14 +5,14 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-shopdev}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Debes definir POSTGRES_PASSWORD en .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shopdev_pass}
       POSTGRES_DB: ${POSTGRES_DB:-shopdev}
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
       - shopdev_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U shopdev -d shopdev"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-shopdev} -d ${POSTGRES_DB:-shopdev}"]
       interval: 5s
       timeout: 5s
       retries: 10
