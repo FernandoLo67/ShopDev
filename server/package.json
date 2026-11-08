@@ -11,6 +11,9 @@
     "dev": "nodemon --watch src --ext js,json src/server.js",
     "build": "prisma generate",
     "start": "node src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "seed": "prisma db seed",
     "migrate": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
@@ -36,7 +39,10 @@
     "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "2.1.8",
     "nodemon": "3.1.7",
-    "prisma": "5.22.0"
+    "prisma": "5.22.0",
+    "supertest": "7.3.2",
+    "vitest": "2.1.8"
   }
 }

@@ -7,6 +7,11 @@
     "install:all": "npm --prefix server install && npm --prefix client install",
     "dev:server": "npm --prefix server run dev",
     "dev:client": "npm --prefix client run dev",
+    "test": "npm --prefix server test && npm --prefix client test",
+    "test:server": "npm --prefix server test",
+    "test:client": "npm --prefix client test",
+    "lint:client": "npm --prefix client run lint",
+    "build:client": "npm --prefix client run build",
     "migrate": "npm --prefix server run migrate",
     "seed": "npm --prefix server run seed"
   }

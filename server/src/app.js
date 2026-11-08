@@ -17,7 +17,10 @@ app.set('trust proxy', 1);
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use('/uploads', express.static(path.resolve('uploads'), { index: false, dotfiles: 'deny' }));
 app.use(cors({ origin: env.corsOrigin }));
-app.use(morgan(env.isProd ? 'combined' : 'dev'));
+// Sin logging HTTP en tests para no ensuciar la salida del test runner
+if (env.nodeEnv !== 'test') {
+  app.use(morgan(env.isProd ? 'combined' : 'dev'));
+}
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 

@@ -1,0 +1,38 @@
+# Infraestructura como codigo para Render (https://render.com)
+# Despliega la API de ShopDev. El frontend se publica en Vercel
+# (ver client/vercel.json) y la base de datos puede ser este servicio
+# de Postgres o una instancia externa como Neon.
+services:
+  - type: web
+    name: shopdev-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: server
+    buildCommand: npm ci && npx prisma generate && npx prisma migrate deploy
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: shopdev-db
+          property: connectionString
+      # Render genera un valor aleatorio seguro en el primer despliegue
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: BCRYPT_ROUNDS
+        value: "12"
+      # Debe apuntar al dominio del frontend ya desplegado
+      - key: CORS_ORIGIN
+        sync: false
+
+databases:
+  - name: shopdev-db
+    plan: free
+    region: oregon
+    databaseName: shopdev
+    user: shopdev
