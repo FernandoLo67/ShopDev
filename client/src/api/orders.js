@@ -14,3 +14,8 @@ export const getOrderById = async (id) => {
   const { data } = await api.get(`/orders/${id}`);
   return data;
 };
+
+export const updateOrderStatus = async (id, estado) => {
+  const { data } = await api.put(`/orders/${id}/status`, { estado });
+  return data;
+};

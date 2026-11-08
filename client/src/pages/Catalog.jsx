@@ -4,6 +4,7 @@ import { getProducts } from '../api/products';
 import { getCategories } from '../api/categories';
 import ProductCard from '../components/ui/ProductCard';
 import Spinner from '../components/ui/Spinner';
+import Pagination from '../components/ui/Pagination';
 
 export default function Catalog() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -83,61 +84,6 @@ export default function Catalog() {
     const params = new URLSearchParams(searchParams);
     params.set('page', String(page));
     setSearchParams(params);
-  };
-
-  const renderPagination = () => {
-    if (!pagination.totalPages || pagination.totalPages <= 1) return null;
-
-    const pages = [];
-    for (let i = 1; i <= pagination.totalPages; i++) {
-      if (
-        i === 1 ||
-        i === pagination.totalPages ||
-        (i >= currentPage - 1 && i <= currentPage + 1)
-      ) {
-        pages.push(i);
-      } else if (pages[pages.length - 1] !== '...') {
-        pages.push('...');
-      }
-    }
-
-    return (
-      <div className="flex justify-center items-center gap-2 mt-8">
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage <= 1}
-          className="px-3 py-2 rounded-lg border border-gray-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-        >
-          Anterior
-        </button>
-        {pages.map((page, idx) =>
-          page === '...' ? (
-            <span key={`dots-${idx}`} className="px-2 text-gray-400">
-              ...
-            </span>
-          ) : (
-            <button
-              key={page}
-              onClick={() => goToPage(page)}
-              className={`px-3 py-2 rounded-lg text-sm ${
-                page === currentPage
-                  ? 'bg-brand-600 text-white'
-                  : 'border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {page}
-            </button>
-          )
-        )}
-        <button
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage >= pagination.totalPages}
-          className="px-3 py-2 rounded-lg border border-gray-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-        >
-          Siguiente
-        </button>
-      </div>
-    );
   };
 
   return (
@@ -267,7 +213,11 @@ export default function Catalog() {
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
-              {renderPagination()}
+              <Pagination
+                page={currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={goToPage}
+              />
             </>
           )}
         </div>

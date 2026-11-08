@@ -119,6 +119,15 @@ export default function Header() {
                   >
                     Mi perfil
                   </Link>
+                  {user.rol === 'ADMIN' && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm font-medium text-brand-600 hover:bg-gray-100 border-b border-gray-200"
+                    >
+                      Panel admin
+                    </Link>
+                  )}
                   <Link
                     to="/mis-pedidos"
                     onClick={() => setDropdownOpen(false)}
@@ -225,6 +234,15 @@ export default function Header() {
                   >
                     Mi perfil
                   </Link>
+                  {user.rol === 'ADMIN' && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-3 py-2 rounded-lg hover:bg-brand-600 text-sm font-medium border-b border-brand-500"
+                    >
+                      Panel admin
+                    </Link>
+                  )}
                   <Link
                     to="/mis-pedidos"
                     onClick={() => setMenuOpen(false)}

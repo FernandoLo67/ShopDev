@@ -4,6 +4,7 @@ import { getProductById } from '../api/products';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { formatPrice } from '../utils/formatPrice';
+import { resolveImageUrl } from '../utils/imageUrl';
 import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
 
@@ -78,7 +79,7 @@ export default function ProductDetail() {
         <div>
           {product.imagenUrl ? (
             <img
-              src={product.imagenUrl}
+              src={resolveImageUrl(product.imagenUrl)}
               alt={product.nombre}
               className="w-full rounded-lg shadow-md object-cover aspect-square"
             />

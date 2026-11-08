@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../../utils/formatPrice';
+import { resolveImageUrl } from '../../utils/imageUrl';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -28,7 +29,7 @@ export default function ProductCard({ product }) {
       <Link to={`/productos/${product.id}`}>
         {product.imagenUrl ? (
           <img
-            src={product.imagenUrl}
+            src={resolveImageUrl(product.imagenUrl)}
             alt={product.nombre}
             className="w-full h-48 object-cover"
           />

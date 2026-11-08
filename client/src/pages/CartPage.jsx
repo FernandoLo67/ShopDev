@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { formatPrice } from '../utils/formatPrice';
+import { resolveImageUrl } from '../utils/imageUrl';
 import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
 
@@ -66,7 +67,7 @@ export default function CartPage() {
                 {/* Imagen */}
                 {item.product?.imagenUrl ? (
                   <img
-                    src={item.product.imagenUrl}
+                    src={resolveImageUrl(item.product.imagenUrl)}
                     alt={item.product.nombre}
                     className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                   />

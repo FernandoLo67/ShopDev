@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getOrderById } from '../api/orders';
 import { formatPrice } from '../utils/formatPrice';
+import { resolveImageUrl } from '../utils/imageUrl';
 import OrderStatusBadge from '../components/ui/OrderStatusBadge';
 import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
@@ -83,7 +84,7 @@ export default function OrderDetail() {
               {/* Imagen */}
               {(item.producto?.imagenUrl || item.product?.imagenUrl) ? (
                 <img
-                  src={item.producto?.imagenUrl || item.product?.imagenUrl}
+                  src={resolveImageUrl(item.producto?.imagenUrl || item.product?.imagenUrl)}
                   alt={item.producto?.nombre || item.product?.nombre}
                   className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                 />

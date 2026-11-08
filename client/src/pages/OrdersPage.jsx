@@ -5,6 +5,7 @@ import { formatPrice } from '../utils/formatPrice';
 import OrderStatusBadge from '../components/ui/OrderStatusBadge';
 import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
+import Pagination from '../components/ui/Pagination';
 
 const STATUS_FILTERS = [
   { value: '', label: 'Todos' },
@@ -168,29 +169,11 @@ export default function OrdersPage() {
           </div>
 
           {/* Paginacion */}
-          {pagination.totalPages > 1 && (
-            <div className="flex justify-center items-center gap-4 mt-8">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={pagination.page <= 1}
-                onClick={() => handlePageChange(pagination.page - 1)}
-              >
-                Anterior
-              </Button>
-              <span className="text-sm text-gray-600">
-                Pagina {pagination.page} de {pagination.totalPages}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={pagination.page >= pagination.totalPages}
-                onClick={() => handlePageChange(pagination.page + 1)}
-              >
-                Siguiente
-              </Button>
-            </div>
-          )}
+          <Pagination
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+          />
         </>
       )}
     </div>
