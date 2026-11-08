@@ -13,6 +13,13 @@ const ORDER_INCLUDE = {
   },
 };
 
+const ADMIN_ORDER_INCLUDE = {
+  ...ORDER_INCLUDE,
+  user: {
+    select: { id: true, nombre: true, email: true },
+  },
+};
+
 const TRANSICIONES = {
   PENDIENTE: ['PAGADO'],
   PAGADO: ['ENVIADO'],
@@ -131,6 +138,67 @@ export const getByUser = async (userId, { page = 1, limit = 10, estado }) => {
       total,
       totalPages: Math.ceil(total / limit),
     },
+  };
+};
+
+export const getAll = async ({ page = 1, limit = 10, estado, userId }) => {
+  const where = {};
+
+  if (estado) {
+    where.estado = estado;
+  }
+
+  if (userId) {
+    where.userId = userId;
+  }
+
+  const skip = (page - 1) * limit;
+
+  const [data, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      include: ADMIN_ORDER_INCLUDE,
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  return {
+    data,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+export const getStats = async () => {
+  const [totalPedidos, porEstado, ingresos, totalProductos, totalUsuarios, sinStock] =
+    await Promise.all([
+      prisma.order.count(),
+      prisma.order.groupBy({ by: ['estado'], _count: { _all: true } }),
+      prisma.order.aggregate({ _sum: { total: true } }),
+      prisma.product.count(),
+      prisma.user.count(),
+      prisma.product.count({ where: { stock: 0 } }),
+    ]);
+
+  const estados = { PENDIENTE: 0, PAGADO: 0, ENVIADO: 0 };
+  porEstado.forEach((fila) => {
+    estados[fila.estado] = fila._count._all;
+  });
+
+  return {
+    totalPedidos,
+    pedidosPorEstado: estados,
+    ingresosTotales: ingresos._sum.total ?? 0,
+    totalProductos,
+    totalUsuarios,
+    productosSinStock: sinStock,
   };
 };
 

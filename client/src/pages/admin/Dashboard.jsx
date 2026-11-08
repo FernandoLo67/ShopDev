@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getProducts } from '../../api/products';
 import { getCategories } from '../../api/categories';
-import { getUsers } from '../../api/users';
-import { getOrders } from '../../api/orders';
+import { getAllOrders, getOrderStats } from '../../api/orders';
 import { useToast } from '../../context/ToastContext';
 import { formatPrice } from '../../utils/formatPrice';
 import StatCard from '../../components/ui/StatCard';
@@ -57,6 +56,26 @@ const ICONS = {
       />
     </svg>
   ),
+  ingresos: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 9v1m0-9a3 3 0 00-3 2m9 1a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+  ),
+  stock: (
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+      />
+    </svg>
+  ),
 };
 
 export default function Dashboard() {
@@ -67,6 +86,8 @@ export default function Dashboard() {
     categories: 0,
     users: 0,
     orders: 0,
+    ingresos: 0,
+    sinStock: 0,
   });
   const [productsByCategory, setProductsByCategory] = useState([]);
   const [ordersByStatus, setOrdersByStatus] = useState([]);
@@ -78,23 +99,25 @@ export default function Dashboard() {
     const load = async () => {
       try {
         setLoading(true);
-        const [productsRes, categoriesRes, usersRes, ordersRes] = await Promise.all([
+        const [statsRes, productsRes, categoriesRes, ordersRes] = await Promise.all([
+          getOrderStats(),
           getProducts({ limit: 100 }),
           getCategories(),
-          getUsers({ limit: 1 }),
-          getOrders({ limit: 100 }),
+          getAllOrders({ limit: 5 }),
         ]);
         if (!active) return;
 
+        const stats = statsRes.data || {};
         const products = productsRes.data || [];
         const categories = categoriesRes.data || [];
-        const orders = ordersRes.data || [];
 
         setTotals({
-          products: productsRes.pagination?.total ?? products.length,
+          products: stats.totalProductos ?? products.length,
           categories: categories.length,
-          users: usersRes.pagination?.total ?? (usersRes.data || []).length,
-          orders: ordersRes.pagination?.total ?? orders.length,
+          users: stats.totalUsuarios ?? 0,
+          orders: stats.totalPedidos ?? 0,
+          ingresos: stats.ingresosTotales ?? 0,
+          sinStock: stats.productosSinStock ?? 0,
         });
 
         const counts = new Map(categories.map((cat) => [cat.nombre, 0]));
@@ -111,15 +134,12 @@ export default function Dashboard() {
         setOrdersByStatus(
           ORDER_STATES.map((state) => ({
             ...state,
-            count: orders.filter((order) => order.estado === state.value).length,
+            count: stats.pedidosPorEstado?.[state.value] ?? 0,
           }))
         );
 
-        setRecentOrders(
-          [...orders]
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-            .slice(0, 5)
-        );
+        // El backend ya devuelve los pedidos ordenados por fecha descendente
+        setRecentOrders(ordersRes.data || []);
       } catch (err) {
         if (active) addToast(err.message, 'error');
       } finally {
@@ -147,6 +167,13 @@ export default function Dashboard() {
   const columns = [
     { key: 'id', label: '#', render: (row) => `#${row.id}` },
     {
+      key: 'cliente',
+      label: 'Cliente',
+      render: (row) => (
+        <span className="truncate">{row.user?.nombre || 'Usuario eliminado'}</span>
+      ),
+    },
+    {
       key: 'createdAt',
       label: 'Fecha',
       render: (row) => new Date(row.createdAt).toLocaleDateString('es-ES'),
@@ -163,11 +190,13 @@ export default function Dashboard() {
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <StatCard label="Ingresos totales" value={formatPrice(totals.ingresos)} icon={ICONS.ingresos} />
+        <StatCard label="Total pedidos" value={totals.orders} icon={ICONS.pedidos} />
+        <StatCard label="Total usuarios" value={totals.users} icon={ICONS.usuarios} />
         <StatCard label="Total productos" value={totals.products} icon={ICONS.productos} />
         <StatCard label="Total categorias" value={totals.categories} icon={ICONS.categorias} />
-        <StatCard label="Total usuarios" value={totals.users} icon={ICONS.usuarios} />
-        <StatCard label="Total pedidos" value={totals.orders} icon={ICONS.pedidos} />
+        <StatCard label="Productos sin stock" value={totals.sinStock} icon={ICONS.stock} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

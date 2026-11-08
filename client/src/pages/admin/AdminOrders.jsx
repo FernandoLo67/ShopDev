@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getOrders, updateOrderStatus } from '../../api/orders';
+import { getAllOrders, updateOrderStatus } from '../../api/orders';
 import { useToast } from '../../context/ToastContext';
 import { formatPrice } from '../../utils/formatPrice';
 import { resolveImageUrl } from '../../utils/imageUrl';
@@ -28,13 +28,12 @@ export default function AdminOrders() {
   const [selected, setSelected] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
 
-  // Limitacion del backend: GET /orders solo devuelve los pedidos del usuario autenticado, no todos los del sistema.
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       const params = { page, limit: 10 };
       if (statusFilter) params.estado = statusFilter;
-      const res = await getOrders(params);
+      const res = await getAllOrders(params);
       setOrders(res.data || []);
       setPagination({
         page: res.pagination?.page || 1,
@@ -86,6 +85,18 @@ export default function AdminOrders() {
           month: 'short',
           day: 'numeric',
         }),
+    },
+    {
+      key: 'cliente',
+      label: 'Cliente',
+      render: (row) => (
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-gray-900 truncate">
+            {row.user?.nombre || 'Usuario eliminado'}
+          </p>
+          <p className="text-xs text-gray-500 truncate">{row.user?.email || '-'}</p>
+        </div>
+      ),
     },
     {
       key: 'items',
@@ -177,6 +188,16 @@ export default function AdminOrders() {
                 })}
               </p>
               <OrderStatusBadge status={selected.estado} />
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                Cliente
+              </p>
+              <p className="text-sm font-medium text-gray-900">
+                {selected.user?.nombre || 'Usuario eliminado'}
+              </p>
+              <p className="text-xs text-gray-500">{selected.user?.email || '-'}</p>
             </div>
 
             <ul className="divide-y divide-gray-100">

@@ -14,6 +14,17 @@ export const list = asyncHandler(async (req, res) => {
   return paginated(res, result.data, result.pagination);
 });
 
+export const listAll = asyncHandler(async (req, res) => {
+  const { page, limit, estado, userId } = req.query;
+  const result = await orderService.getAll({ page, limit, estado, userId });
+  return paginated(res, result.data, result.pagination);
+});
+
+export const stats = asyncHandler(async (req, res) => {
+  const data = await orderService.getStats();
+  return success(res, data);
+});
+
 export const getById = asyncHandler(async (req, res) => {
   const order = await orderService.getById(req.params.id, req.user);
   return success(res, order);

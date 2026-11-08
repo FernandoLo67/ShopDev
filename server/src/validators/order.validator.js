@@ -55,6 +55,15 @@ export const listOrdersRules = [
     .withMessage('El estado debe ser PENDIENTE, PAGADO o ENVIADO'),
 ];
 
+export const listAllOrdersRules = [
+  ...listOrdersRules,
+  query('userId')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('El userId debe ser un entero positivo')
+    .toInt(),
+];
+
 export const updateStatusRules = [
   param('id')
     .isInt({ min: 1 })

@@ -129,7 +129,9 @@ ShopDev/
 
 ### Pedidos
 - `POST /api/orders` — Crear pedido desde carrito
-- `GET /api/orders` — Historial de pedidos
+- `GET /api/orders` — Historial de pedidos del usuario autenticado
+- `GET /api/orders/all` — Todos los pedidos del sistema (admin)
+- `GET /api/orders/stats` — Metricas agregadas para el dashboard (admin)
 - `GET /api/orders/:id` — Detalle del pedido
 - `PUT /api/orders/:id/status` — Cambiar estado (admin)
 
