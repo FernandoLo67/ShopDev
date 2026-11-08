@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { getProducts } from '../api/products';
 import { getCategories } from '../api/categories';
 import ProductCard from '../components/ui/ProductCard';
-import Spinner from '../components/ui/Spinner';
+import Skeleton, { ProductGridSkeleton } from '../components/ui/Skeleton';
+import EmptyState from '../components/ui/EmptyState';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -42,7 +43,16 @@ export default function Home() {
       </section>
 
       {/* Categorias */}
-      {!loading && categories.length > 0 && (
+      {loading ? (
+        <section className="max-w-7xl mx-auto px-4 py-16">
+          <Skeleton className="h-8 w-40 mb-8" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} className="h-40 rounded-lg" />
+            ))}
+          </div>
+        </section>
+      ) : categories.length > 0 ? (
         <section className="max-w-7xl mx-auto px-4 py-16">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
             Categorias
@@ -72,7 +82,7 @@ export default function Home() {
             ))}
           </div>
         </section>
-      )}
+      ) : null}
 
       {/* Productos destacados */}
       <section className="max-w-7xl mx-auto px-4 py-16">
@@ -80,9 +90,15 @@ export default function Home() {
           Productos destacados
         </h2>
         {loading ? (
-          <div className="flex justify-center py-12">
-            <Spinner size="lg" />
-          </div>
+          <ProductGridSkeleton
+            count={4}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          />
+        ) : products.length === 0 ? (
+          <EmptyState
+            title="Todavia no hay productos"
+            description="Vuelve pronto, estamos preparando el catalogo."
+          />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (

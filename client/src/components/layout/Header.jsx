@@ -57,10 +57,12 @@ export default function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar productos..."
+              aria-label="Buscar productos"
               className="w-full px-4 py-2 pr-10 rounded-lg text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
             />
             <button
               type="submit"
+              aria-label="Buscar"
               className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +80,11 @@ export default function Header() {
         {/* Lado derecho - Desktop */}
         <div className="hidden md:flex items-center gap-4">
           {/* Carrito */}
-          <Link to="/carrito" className="relative p-2 hover:text-brand-200 transition-colors">
+          <Link
+            to="/carrito"
+            aria-label={`Carrito, ${itemCount} ${itemCount === 1 ? 'producto' : 'productos'}`}
+            className="relative p-2 hover:text-brand-200 transition-colors"
+          >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -98,6 +104,9 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
+                aria-expanded={dropdownOpen}
+                aria-haspopup="menu"
+                aria-label="Menu de usuario"
                 className="flex items-center gap-2 hover:text-brand-200 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +173,11 @@ export default function Header() {
 
         {/* Mobile: carrito + hamburguesa */}
         <div className="flex md:hidden items-center gap-2">
-          <Link to="/carrito" className="relative p-2 hover:text-brand-200 transition-colors">
+          <Link
+            to="/carrito"
+            aria-label={`Carrito, ${itemCount} ${itemCount === 1 ? 'producto' : 'productos'}`}
+            className="relative p-2 hover:text-brand-200 transition-colors"
+          >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -181,6 +194,8 @@ export default function Header() {
           </Link>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? 'Cerrar menu' : 'Abrir menu'}
             className="p-2 hover:text-brand-200 transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,6 +229,7 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar productos..."
+                aria-label="Buscar productos"
                 className="w-full px-4 py-2 rounded-lg text-gray-900 text-sm focus:outline-none"
               />
             </form>

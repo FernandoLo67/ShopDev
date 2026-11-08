@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { formatPrice } from '../utils/formatPrice';
 import { resolveImageUrl } from '../utils/imageUrl';
-import Spinner from '../components/ui/Spinner';
+import { ProductDetailSkeleton } from '../components/ui/Skeleton';
 import Button from '../components/ui/Button';
 
 export default function ProductDetail() {
@@ -39,11 +39,7 @@ export default function ProductDetail() {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner size="lg" />
-      </div>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (!product) {

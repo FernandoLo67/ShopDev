@@ -12,8 +12,10 @@ import CartPage from '../pages/CartPage';
 import CheckoutPage from '../pages/CheckoutPage';
 import OrderConfirmation from '../pages/OrderConfirmation';
 import OrdersPage from '../pages/OrdersPage';
+import Profile from '../pages/Profile';
 import OrderDetail from '../pages/OrderDetail';
 import NotFound from '../pages/NotFound';
+import ErrorPage from '../pages/ErrorPage';
 import Dashboard from '../pages/admin/Dashboard';
 import AdminProducts from '../pages/admin/AdminProducts';
 import AdminCategories from '../pages/admin/AdminCategories';
@@ -24,6 +26,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
       { path: 'productos', element: <Catalog /> },
@@ -36,6 +39,7 @@ export const router = createBrowserRouter([
         children: [
           { path: 'checkout', element: <CheckoutPage /> },
           { path: 'pedido-confirmado/:orderId', element: <OrderConfirmation /> },
+          { path: 'perfil', element: <Profile /> },
           { path: 'mis-pedidos', element: <OrdersPage /> },
           { path: 'mis-pedidos/:id', element: <OrderDetail /> },
         ],
@@ -46,6 +50,7 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         element: <AdminRoute />,
@@ -55,6 +60,7 @@ export const router = createBrowserRouter([
           { path: 'categorias', element: <AdminCategories /> },
           { path: 'pedidos', element: <AdminOrders /> },
           { path: 'usuarios', element: <AdminUsers /> },
+          { path: '*', element: <NotFound /> },
         ],
       },
     ],

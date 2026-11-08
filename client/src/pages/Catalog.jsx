@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { getProducts } from '../api/products';
 import { getCategories } from '../api/categories';
 import ProductCard from '../components/ui/ProductCard';
-import Spinner from '../components/ui/Spinner';
+import { ProductGridSkeleton } from '../components/ui/Skeleton';
+import EmptyState from '../components/ui/EmptyState';
 import Pagination from '../components/ui/Pagination';
 
 export default function Catalog() {
@@ -12,6 +13,7 @@ export default function Catalog() {
   const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const currentCategory = searchParams.get('category') || '';
@@ -32,6 +34,7 @@ export default function Catalog() {
 
   useEffect(() => {
     setLoading(true);
+    setError('');
     const params = { page: currentPage, limit: 12 };
     if (currentCategory) params.category = currentCategory;
     if (currentSearch) params.search = currentSearch;
@@ -43,7 +46,10 @@ export default function Catalog() {
         setProducts(res.data || []);
         setPagination(res.pagination || {});
       })
-      .catch(() => setProducts([]))
+      .catch((err) => {
+        setProducts([]);
+        setError(err.message);
+      })
       .finally(() => setLoading(false));
   }, [currentCategory, currentSearch, currentMinPrice, currentMaxPrice, currentPage]);
 
@@ -78,6 +84,17 @@ export default function Catalog() {
 
   const handleCategoryClick = (slug) => {
     updateFilters({ category: slug === currentCategory ? '' : slug });
+  };
+
+  const hayFiltrosActivos = Boolean(
+    currentCategory || currentSearch || currentMinPrice || currentMaxPrice
+  );
+
+  const limpiarFiltros = () => {
+    setSearchInput('');
+    setMinPrice('');
+    setMaxPrice('');
+    setSearchParams(new URLSearchParams());
   };
 
   const goToPage = (page) => {
@@ -197,15 +214,41 @@ export default function Catalog() {
         {/* Product grid */}
         <div className="flex-1">
           {loading ? (
-            <div className="flex justify-center py-12">
-              <Spinner size="lg" />
-            </div>
+            <ProductGridSkeleton count={6} />
+          ) : error ? (
+            <EmptyState
+              icon="alert"
+              title="No pudimos cargar los productos"
+              description={error}
+              action={
+                <button
+                  onClick={() => setSearchParams(new URLSearchParams(searchParams))}
+                  className="px-6 py-2.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+                >
+                  Reintentar
+                </button>
+              }
+            />
           ) : products.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">
-                No se encontraron productos
-              </p>
-            </div>
+            <EmptyState
+              icon="search"
+              title="No se encontraron productos"
+              description={
+                hayFiltrosActivos
+                  ? 'Prueba con otros filtros o limpia la busqueda para ver todo el catalogo.'
+                  : 'Todavia no hay productos publicados en la tienda.'
+              }
+              action={
+                hayFiltrosActivos ? (
+                  <button
+                    onClick={limpiarFiltros}
+                    className="px-6 py-2.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+                  >
+                    Limpiar filtros
+                  </button>
+                ) : null
+              }
+            />
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

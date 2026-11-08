@@ -8,20 +8,38 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
+  // Validacion del token al montar. Se lee de localStorage aqui dentro
+  // para que el efecto corra una sola vez y no dependa del estado.
   useEffect(() => {
-    if (token) {
-      authApi
-        .getMe()
-        .then((res) => setUser(res.data))
-        .catch(() => {
-          localStorage.removeItem('token');
-          setToken(null);
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
+    const almacenado = localStorage.getItem('token');
+
+    if (!almacenado) {
       setLoading(false);
+      return;
     }
+
+    authApi
+      .getMe()
+      .then((res) => setUser(res.data))
+      .catch(() => {
+        localStorage.removeItem('token');
+        setToken(null);
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // El interceptor de axios emite este evento cuando el backend responde 401.
+  // Cerramos sesion en memoria para que la UI reaccione sin recargar.
+  useEffect(() => {
+    const manejarSesionExpirada = () => {
+      setToken(null);
+      setUser(null);
+    };
+
+    window.addEventListener('auth:sesion-expirada', manejarSesionExpirada);
+    return () =>
+      window.removeEventListener('auth:sesion-expirada', manejarSesionExpirada);
   }, []);
 
   const login = useCallback(async (email, password) => {

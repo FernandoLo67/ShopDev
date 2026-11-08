@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
+import SessionWatcher from '../auth/SessionWatcher';
 import { AuthProvider, useAuth } from '../../context/AuthContext';
 import { ToastProvider } from '../../context/ToastContext';
 
@@ -79,6 +80,7 @@ export default function AdminLayout() {
   return (
     <AuthProvider>
       <ToastProvider>
+        <SessionWatcher />
         <AdminShell />
       </ToastProvider>
     </AuthProvider>

@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { getOrders } from '../api/orders';
 import { formatPrice } from '../utils/formatPrice';
 import OrderStatusBadge from '../components/ui/OrderStatusBadge';
-import Spinner from '../components/ui/Spinner';
+import { ListSkeleton } from '../components/ui/Skeleton';
+import EmptyState from '../components/ui/EmptyState';
 import Button from '../components/ui/Button';
 import Pagination from '../components/ui/Pagination';
 
@@ -79,41 +80,43 @@ export default function OrdersPage() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center py-12">
-          <Spinner size="lg" />
-        </div>
+        <ListSkeleton count={3} />
       ) : error ? (
-        <div className="text-center py-12">
-          <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => fetchOrders(1, statusFilter)}>
-            Reintentar
-          </Button>
-        </div>
+        <EmptyState
+          icon="alert"
+          title="No pudimos cargar tus pedidos"
+          description={error}
+          action={
+            <Button onClick={() => fetchOrders(1, statusFilter)}>Reintentar</Button>
+          }
+        />
       ) : orders.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-            <svg
-              className="w-8 h-8 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-          </div>
-          <p className="text-gray-500 text-lg mb-4">No tienes pedidos aun</p>
-          <Link
-            to="/productos"
-            className="text-brand-600 hover:text-brand-700 font-medium"
-          >
-            Explorar productos
-          </Link>
-        </div>
+        <EmptyState
+          title={
+            statusFilter
+              ? `No tienes pedidos en estado ${statusFilter.toLowerCase()}`
+              : 'No tienes pedidos aun'
+          }
+          description={
+            statusFilter
+              ? 'Prueba con otro filtro para ver el resto de tus pedidos.'
+              : 'Cuando completes una compra, tus pedidos apareceran aqui.'
+          }
+          action={
+            statusFilter ? (
+              <Button variant="outline" onClick={() => handleFilterChange('')}>
+                Ver todos
+              </Button>
+            ) : (
+              <Link
+                to="/productos"
+                className="px-6 py-2.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+              >
+                Explorar productos
+              </Link>
+            )
+          }
+        />
       ) : (
         <>
           {/* Lista de pedidos */}

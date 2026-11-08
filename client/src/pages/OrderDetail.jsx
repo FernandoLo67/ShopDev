@@ -4,7 +4,8 @@ import { getOrderById } from '../api/orders';
 import { formatPrice } from '../utils/formatPrice';
 import { resolveImageUrl } from '../utils/imageUrl';
 import OrderStatusBadge from '../components/ui/OrderStatusBadge';
-import Spinner from '../components/ui/Spinner';
+import Skeleton, { ListSkeleton } from '../components/ui/Skeleton';
+import EmptyState from '../components/ui/EmptyState';
 import Button from '../components/ui/Button';
 
 export default function OrderDetail() {
@@ -30,19 +31,27 @@ export default function OrderDetail() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <Spinner size="lg" />
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <Skeleton className="h-9 w-48 mb-2" />
+        <Skeleton className="h-4 w-56 mb-8" />
+        <ListSkeleton count={3} />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-        <p className="text-red-600 mb-4">{error}</p>
-        <Link to="/mis-pedidos">
-          <Button variant="outline">Volver a mis pedidos</Button>
-        </Link>
+      <div className="max-w-4xl mx-auto px-4 py-12">
+        <EmptyState
+          icon="alert"
+          title="No pudimos cargar el pedido"
+          description={error}
+          action={
+            <Link to="/mis-pedidos">
+              <Button variant="outline">Volver a mis pedidos</Button>
+            </Link>
+          }
+        />
       </div>
     );
   }

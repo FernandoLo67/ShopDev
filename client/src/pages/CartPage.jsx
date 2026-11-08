@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { formatPrice } from '../utils/formatPrice';
 import { resolveImageUrl } from '../utils/imageUrl';
-import Spinner from '../components/ui/Spinner';
+import { ListSkeleton } from '../components/ui/Skeleton';
+import EmptyState from '../components/ui/EmptyState';
 import Button from '../components/ui/Button';
 
 export default function CartPage() {
@@ -33,8 +34,11 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <Spinner size="lg" />
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">
+          Carrito de compras
+        </h1>
+        <ListSkeleton count={3} />
       </div>
     );
   }
@@ -46,15 +50,19 @@ export default function CartPage() {
       </h1>
 
       {items.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg mb-4">Tu carrito esta vacio</p>
-          <Link
-            to="/productos"
-            className="text-brand-600 hover:text-brand-700 font-medium"
-          >
-            Ver productos
-          </Link>
-        </div>
+        <EmptyState
+          icon="cart"
+          title="Tu carrito esta vacio"
+          description="Agrega productos desde el catalogo para continuar con tu compra."
+          action={
+            <Link
+              to="/productos"
+              className="px-6 py-2.5 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors font-medium"
+            >
+              Ver productos
+            </Link>
+          }
+        />
       ) : (
         <div>
           {/* Items */}
