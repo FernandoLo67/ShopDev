@@ -30,7 +30,7 @@ Plataforma de comercio electronico fullstack construida con React, Node.js, Expr
 
 ## Requisitos previos
 
-- Node.js >= 20 LTS
+- Node.js >= 22 LTS (lo exige jsdom, usado en los tests del frontend)
 - Docker y Docker Compose
 - npm
 
