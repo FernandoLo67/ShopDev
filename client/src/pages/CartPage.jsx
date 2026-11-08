@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { formatPrice } from '../utils/formatPrice';
 import Spinner from '../components/ui/Spinner';
@@ -7,7 +8,9 @@ import Button from '../components/ui/Button';
 
 export default function CartPage() {
   const { items, total, loading, updateItem, removeItem } = useCart();
+  const { user } = useAuth();
   const { addToast } = useToast();
+  const navigate = useNavigate();
 
   const handleRemove = async (item) => {
     try {
@@ -141,12 +144,30 @@ export default function CartPage() {
               <span>Total:</span>
               <span className="text-brand-600">{formatPrice(total)}</span>
             </div>
-            <Button disabled className="w-full mt-4" size="lg">
+            <Button
+              className="w-full mt-4"
+              size="lg"
+              onClick={() => {
+                if (!user) {
+                  navigate('/login', {
+                    state: {
+                      from: '/checkout',
+                      message: 'Inicia sesion para continuar',
+                    },
+                  });
+                } else {
+                  navigate('/checkout');
+                }
+              }}
+            >
               Proceder al pago
             </Button>
-            <p className="text-center text-sm text-gray-400 mt-2">
-              Disponible proximamente
-            </p>
+            <Link
+              to="/productos"
+              className="block text-center text-sm text-brand-600 hover:text-brand-700 font-medium mt-3"
+            >
+              Seguir comprando
+            </Link>
           </div>
         </div>
       )}

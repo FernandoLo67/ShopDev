@@ -120,7 +120,7 @@ export default function Header() {
                     Mi perfil
                   </Link>
                   <Link
-                    to="/pedidos"
+                    to="/mis-pedidos"
                     onClick={() => setDropdownOpen(false)}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
@@ -226,7 +226,7 @@ export default function Header() {
                     Mi perfil
                   </Link>
                   <Link
-                    to="/pedidos"
+                    to="/mis-pedidos"
                     onClick={() => setMenuOpen(false)}
                     className="block px-3 py-2 rounded-lg hover:bg-brand-600 text-sm"
                   >
