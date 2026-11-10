@@ -59,7 +59,7 @@ function validateForm(form) {
 }
 
 export default function CheckoutPage() {
-  const { items, total, loading: cartLoading, clearCart } = useCart();
+  const { items, total, loading: cartLoading, resetCart } = useCart();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -109,7 +109,7 @@ export default function CheckoutPage() {
         cvv: form.cvv,
       };
       const res = await createOrder(payment);
-      await clearCart();
+      resetCart();
       addToast('Pedido realizado con exito', 'success');
       navigate(`/pedido-confirmado/${res.data.id}`, { replace: true });
     } catch (err) {

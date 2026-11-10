@@ -111,14 +111,12 @@ export function CartProvider({ children }) {
     [user, fetchCart]
   );
 
-  const clearCart = useCallback(async () => {
-    if (user) {
-      for (const item of items) {
-        await cartApi.removeCartItem(item.id);
-      }
-    }
+  // Solo limpia el estado local. Al crear un pedido el servidor ya vacia el
+  // carrito dentro de la misma transaccion, asi que borrar cada linea por API
+  // devolveria 404 y haria parecer que el pago fallo cuando ya se cobro.
+  const resetCart = useCallback(() => {
     setItems([]);
-  }, [user, items]);
+  }, []);
 
   const itemCount = items.reduce((sum, i) => sum + (i.cantidad || 0), 0);
   const total = items.reduce((sum, i) => {
@@ -136,7 +134,7 @@ export function CartProvider({ children }) {
         addItem,
         updateItem,
         removeItem,
-        clearCart,
+        resetCart,
       }}
     >
       {children}
