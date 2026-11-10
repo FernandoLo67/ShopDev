@@ -38,7 +38,7 @@ const PRODUCTS = [
   { nombre: 'Camiseta Algodon Basica', descripcion: 'Camiseta unisex 100% algodon organico, corte regular.', precio: '19.99', stock: 120, categoria: 'ropa', imagenUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600' },
   { nombre: 'Chaqueta Vaquera Classic', descripcion: 'Chaqueta de denim con forro suave y cierre de botones.', precio: '59.50', stock: 40, categoria: 'ropa', imagenUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600' },
   { nombre: 'Lampara LED de Escritorio', descripcion: 'Lampara regulable con 3 modos de luz y puerto USB de carga.', precio: '34.95', stock: 75, categoria: 'hogar', imagenUrl: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600' },
-  { nombre: 'Set de Cojines Decorativos', descripcion: 'Pack de 2 cojines de lino con relleno hipoalergenico.', precio: '24.00', stock: 90, categoria: 'hogar', imagenUrl: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e5?w=600' },
+  { nombre: 'Set de Cojines Decorativos', descripcion: 'Pack de 2 cojines de lino con relleno hipoalergenico.', precio: '24.00', stock: 90, categoria: 'hogar', imagenUrl: 'https://images.unsplash.com/photo-1629949009765-40fc74c9ec21?w=600' },
 ];
 
 async function seedUsers() {
