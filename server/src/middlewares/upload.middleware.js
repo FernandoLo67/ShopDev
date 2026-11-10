@@ -52,6 +52,42 @@ export const handleUploadError = (err, req, _res, next) => {
   next(err);
 };
 
+const FIRMAS = {
+  'image/jpeg': (b) => b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff,
+  'image/png': (b) =>
+    b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])),
+  'image/webp': (b) =>
+    b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WEBP',
+};
+
+// El mimetype lo declara el cliente, asi que no basta: se comprueban los
+// primeros bytes del archivo ya guardado y se descarta si no son de una imagen.
+export const verifyImageContent = (req, _res, next) => {
+  if (!req.file) return next();
+
+  const { path: filePath, mimetype } = req.file;
+  let cabecera = Buffer.alloc(12);
+
+  try {
+    const fd = fs.openSync(filePath, 'r');
+    try {
+      fs.readSync(fd, cabecera, 0, 12, 0);
+    } finally {
+      fs.closeSync(fd);
+    }
+  } catch {
+    cabecera = Buffer.alloc(12);
+  }
+
+  const esValida = FIRMAS[mimetype]?.(cabecera) === true;
+  if (!esValida) {
+    deleteFile(`products/${req.file.filename}`);
+    return next(ApiError.badRequest('El archivo no es una imagen valida'));
+  }
+
+  next();
+};
+
 export const deleteFile = (relativePath) => {
   if (!relativePath) return;
   try {

@@ -98,7 +98,9 @@ export const createFromCart = async (userId, payment) => {
         });
 
         if (result.count === 0) {
-          throw new Error(`No se pudo decrementar stock del producto ${item.productId}`);
+          throw ApiError.conflict(
+            'Otro cliente compro las ultimas unidades mientras pagabas. Revisa tu carrito e intenta de nuevo',
+          );
         }
       }
 
